@@ -1,5 +1,6 @@
 package section7
 
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.newSingleThreadContext
@@ -33,9 +34,13 @@ import kotlinx.coroutines.runBlocking
  */
 
 fun main() = runBlocking<Unit> {
-    val coroutineContext = newSingleThreadContext("Thread-1") + CoroutineName("MyCoroutine")
+    val coroutineDispatcher = newSingleThreadContext("Thread-1")
+    val coroutineContext = coroutineDispatcher + CoroutineName("MyCoroutine")
 
     launch(coroutineContext) {
         println("launch coroutine")
+        println("Coroutine Name: ${coroutineContext[CoroutineName.Key]}")
+        println("Dispatcher Name: ${coroutineContext[CoroutineDispatcher]}")
+        println("Dispatcher Name: ${coroutineContext[coroutineDispatcher.key]}")
     }
 }
