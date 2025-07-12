@@ -7,6 +7,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.lang.Thread.sleep
 
 /**
@@ -24,8 +25,10 @@ import java.lang.Thread.sleep
  *       }
  *    }
  * coroutine scope는 위와 같이 내부의 Job을 찾아서, Job을 취소하는 것이고, Job은 취소 전파를 하기 떄문에 취소된다.
+ * launch는 별도로 Job을 지정하지 않으면 상위 Coroutine을 찾아서 해당 Job을 부모 Job으로 사용한다. 아예 분리를 하려면 별도의 Job을 만들어주어야 한다.
  */
-fun main() {
+fun main() = runBlocking {
+    println("runBlocking Coroutine : ${this.coroutineContext[Job]}")
     val newScope = CoroutineScope(CoroutineName("MyCoroutine") + Dispatchers.IO)
     newScope.launch(context = CoroutineName("LaunchCoroutine")) {
         delay(500L)
@@ -33,12 +36,11 @@ fun main() {
         println("launch 코루틴의 coroutineContext : ${this.coroutineContext}")
         println("launch 코루틴의 parentJob은 newScope 인가: ${this.coroutineContext[Job]?.parent == newScope.coroutineContext[Job]}")
     }
-
     CoroutineScope(Dispatchers.IO).launch(CoroutineName("NestedLaunchCoroutine")) {
-        delay(500L)
+        println(this.coroutineContext[Job]?.parent)
         println("별도의 CoroutineScope는 실행된다 $this")
+        delay(500L)
     }
-
     newScope.cancel()
-    sleep(1000L)
+    delay(1000L)
 }
