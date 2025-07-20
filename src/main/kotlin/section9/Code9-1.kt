@@ -17,6 +17,7 @@ fun main() = runBlocking {
             println("Child Coroutine1 are complete")
         }
 
+        // 단, 예외 전파 뿐만이 아니라 취소 전파까지 제한된다.
         launch(CoroutineName("Child Coroutine 2")) {
             delay(100L)
             println("Child Coroutine2 are complete")
