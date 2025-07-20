@@ -22,12 +22,12 @@ fun main() = runBlocking {
     launch(CoroutineName("Coroutine2") + newJob) {
         // 내부에서 새로운 Job()을 생성하면 별도의 Job으로 분리된다.
         launch(CoroutineName("Coroutine5") + Job()) {
-            delay(100L)
-            println("${this.coroutineContext[CoroutineName]} 코루틴 실행")
+            delay(500L)
+            println("${Thread.currentThread().name} ${this.coroutineContext[CoroutineName]} 코루틴 실행")
         }
     }
 
     delay(100L)
-    newJob.cancel()
+//    newJob.cancel()
     delay(1000L)
 }
