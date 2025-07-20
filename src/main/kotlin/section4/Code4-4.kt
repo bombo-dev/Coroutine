@@ -12,6 +12,8 @@ fun main() = runBlocking<Unit> {
         println("[${Thread.currentThread().name}] 이미지 변환 작업 1")
     }
 
+//    convertedImage1.join() // 일시중지 되어서 아래 코루틴이 병렬로 실행이 안됨.
+
     val convertedImage2 = launch(Dispatchers.Default) {
         sleep(1000L)
         println("[${Thread.currentThread().name}] 이미지 변환 작업 2")
@@ -22,7 +24,8 @@ fun main() = runBlocking<Unit> {
     // 만약, convertedImage1 아래로 가면, 1초 기다리고, 다시 2를 위해서 1초 기다리고 완료된다.
 //    convertedImage1.join()
 //    convertedImage2.join()
-    joinAll(convertedImage1, convertedImage2)
+//    joinAll(convertedImage1, convertedImage2) -> 위 두 개의 코루틴의 실행을 대기하고, 아래 코루틴을 실행 함.
+    // yield를 명시적으로 사용하여 순차성을 보장함.
 
     launch(Dispatchers.Default) {
         println("[${Thread.currentThread().name}] 이미지 업로드")
